@@ -14,3 +14,17 @@ CREATE TABLE Transaction (
    created_at DATETIME,
    FOREIGN KEY (customer_id) REFERENCES Customer(id)
 );
+
+
+CREATE TABLE User (
+   id VARCHAR(50) PRIMARY KEY NOT NULL,
+   username VARCHAR(100) NOT NULL
+);
+
+CREATE TABLE Post (
+   id VARCHAR(50) PRIMARY KEY NOT NULL,
+   user_id VARCHAR(50) NOT NULL,
+   text_post TEXT NOT NULL,
+   created_at DATETIME,
+   FOREIGN KEY (user_id) REFERENCES User(id)
+);
