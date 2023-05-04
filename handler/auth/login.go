@@ -1,53 +1,57 @@
-package handler
+package auth
 
 import (
 	"net/http"
 	"shop-api/config"
 	"shop-api/models"
 
+	"fmt"
+
 	"github.com/gin-gonic/gin"
 	"golang.org/x/crypto/bcrypt"
 )
 
-type AuthInput struct {
+type LoginInput struct {
 	Username string `json:"username" binding:"required"`
 	Password string `json:"password" binding:"required"`
 }
 
 func Login(c *gin.Context) {
 	var user models.User
-	// Convert request body to struct
-	var input AuthInput
+	var input LoginInput
 	if err := c.ShouldBindJSON(&input); err != nil {
 		c.JSON(http.StatusBadRequest, gin.H{"error": err.Error()})
 		return
 	}
-	message, err := LoginCheck(input.Username, input.Password)
+	user.Username = input.Username
+	user.Password = input.Password
+	token, err := LoginCheck(user.Username, user.Password)
 	if err != nil {
-		c.JSON(http.StatusBadRequest, gin.H{"error": "invalid username or password"})
+		c.JSON(http.StatusBadRequest, gin.H{"error": token})
+		return
 	}
-	c.JSON(http.StatusOK, gin.H{"message": message})
+	c.JSON(http.StatusOK, gin.H{"token": token})
 }
 
 func LoginCheck(username, password string) (string, error) {
 	db := config.ConnectDB()
 	user := models.User{}
 	var err error
-
-	// Check if username is exist
-	err = db.QueryRow("SELECT Username, Password FROM User WHERE Username = ?", username).Scan(&user.Username, &user.Password)
+	err = db.QueryRow("SELECT id, username, password FROM users WHERE username = ?", username).Scan(&user.Id, &user.Username, &user.Password)
 	if err != nil {
-		return "", err
+		return "username not found", err
 	}
 	defer db.Close()
-	// Check if password is exist
 	err = VerifyPassword(password, user.Password)
 	if err != nil && err == bcrypt.ErrMismatchedHashAndPassword {
-		return "", nil
+		return "incorrect password", err
 	}
-
-	message := "Sucess login !"
-	return message, nil
+	fmt.Println(user.Id, user.Username, user.Password)
+	token, err := config.GenerateJWT(user.Id)
+	if err != nil {
+		return "error generate JWT", err
+	}
+	return token, nil
 }
 
 func VerifyPassword(password, hashedPassword string) error {

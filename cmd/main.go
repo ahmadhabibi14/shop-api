@@ -2,7 +2,8 @@ package main
 
 import (
 	"log"
-	"shop-api/handler"
+	"shop-api/handler/auth"
+	"shop-api/handler/shop"
 	"shop-api/middlewares"
 
 	"github.com/gin-gonic/gin"
@@ -17,11 +18,17 @@ func init() {
 
 func main() {
 	r := gin.New()
-	r.Use(middlewares.CORSMiddleware())
-	r.Use(gin.Recovery(), middlewares.Logger(), middlewares.BasicAuth())
+	// Public API
+	public := r.Group("/api")
+	public.Use(gin.Recovery(), middlewares.Logger(), middlewares.CORSMiddleware())
+	public.POST("/login", auth.Login)
+	public.POST("/register", auth.Register)
 
-	r.POST("/new-transaction", handler.NewTransaction)
-	r.GET("/search-transaction", handler.SearchTransaction)
+	// Protected API, auth is required
+	shop_api := r.Group("/api/shop")
+	shop_api.Use(gin.Recovery(), middlewares.Logger(), middlewares.AuthJWT())
+	shop_api.POST("/new-transaction", shop.NewTransaction)
+	shop_api.GET("/search-transaction", shop.SearchTransaction)
 	r.Run(":8080")
 	log.Println("Server ready at port 8080")
 }

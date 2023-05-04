@@ -1,9 +1,20 @@
 package middlewares
 
-import "github.com/gin-gonic/gin"
+import (
+	"net/http"
+	"shop-api/config"
 
-func BasicAuth() gin.HandlerFunc {
-	return gin.BasicAuth(gin.Accounts{
-		"pragmatic": "reviews",
-	})
+	"github.com/gin-gonic/gin"
+)
+
+func AuthJWT() gin.HandlerFunc {
+	return func(c *gin.Context) {
+		err := config.TokenValid(c)
+		if err != nil {
+			c.String(http.StatusUnauthorized, "Unauthorized")
+			c.Abort()
+			return
+		}
+		c.Next()
+	}
 }

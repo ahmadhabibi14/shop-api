@@ -41,3 +41,14 @@ proses **Pengambilan solusi** ketika terdapat permasalahan dalam pembuatan **API
 - Unit tests dan/atau integration test
 - Menggunakan `docker-compose` untuk deployment yang lebih mudah
 - **Tidak Diperbolehkan** menggunakan ORM (Mongoose, Sequelize, GORM, dll). Gunakan standard SQL
+
+## Test ::::
+
+- Register user
+```sh
+curl -X POST -d '{"username": "vl3k0", "password": "wow123"}' localhost:8080/api/register
+```
+- Login
+```sh
+curl -X POST -d '{"username": "vl3k0", "password": "wow123"}' localhost:8080/api/login
+```
