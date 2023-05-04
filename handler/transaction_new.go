@@ -5,6 +5,7 @@ import (
 	"net/http"
 	"shop-api/config"
 	"shop-api/models"
+	"time"
 
 	"github.com/gin-gonic/gin"
 )
@@ -17,9 +18,9 @@ func NewTransaction(c *gin.Context) {
 	}
 	db := config.ConnectDB()
 	_, err := db.Exec(
-		"INSERT INTO Transaction (id, customer_id, menu, price, qty, payment, total) VALUES (?, ?, ?, ?, ?, ?, ?",
+		"INSERT INTO Transaction (id, customer_id, menu, price, qty, payment, total, created_at) VALUES (?, ?, ?, ?, ?, ?, ?, ?",
 		transaction.Id, transaction.Customer_id, transaction.Menu,
-		transaction.Price, transaction.Qty, transaction.Payment, transaction.Total,
+		transaction.Price, transaction.Qty, transaction.Payment, transaction.Total, time.Now(),
 	)
 	if err != nil {
 		c.JSON(http.StatusBadRequest, gin.H{"error": err.Error()})

@@ -2,7 +2,7 @@ package main
 
 import (
 	"log"
-	"net/http"
+	"shop-api/handler"
 	"shop-api/middlewares"
 
 	"github.com/gin-gonic/gin"
@@ -18,11 +18,10 @@ func init() {
 func main() {
 	r := gin.New()
 	r.Use(middlewares.CORSMiddleware())
+	r.Use(gin.Recovery(), middlewares.Logger(), middlewares.BasicAuth())
 
-	r.GET("/customer", func(c *gin.Context) {
-		c.JSON(http.StatusOK, gin.H{
-			"message": "pong",
-		})
-	})
+	r.POST("/new-transaction", handler.NewTransaction)
+	r.GET("/search-transaction", handler.SearchTransaction)
 	r.Run(":8080")
+	log.Println("Server ready at port 8080")
 }

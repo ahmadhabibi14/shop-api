@@ -1,5 +1,18 @@
 # Challenge Backend: Customer Transaction Service
 
+## TODO
+
+- [x] Koneksi ke Database MySQL
+- [x] Menggunakan library [Gin](https://gin-gonic.com/)
+- [ ] Membuat API dengan 
+- [ ] Handler:
+      - `POST` Membuat transaksi baru
+      - `GET` Mendapat list transaksi diurutkan dari yang terbaru:
+         - [ ] `Query`: untuk melakukan pencarian menu dan harganya pada transaksi
+         - [ ] `Customer`: diurutkan dari nama customer
+- [ ] Session login, menyimpan kredensial `Customer` untuk melakukan query ke database
+- [ ] Menggunakan `docker-compose` untuk deployment
+
 ## Case Challenge
 
 Buat relasi dari antara 2 tabel yaitu tabel `Customer` dan tabel `Transaction` dimana
