@@ -5,20 +5,18 @@ import (
 	"shop-api/config"
 	"shop-api/models"
 
-	"fmt"
-
 	"github.com/gin-gonic/gin"
 	"golang.org/x/crypto/bcrypt"
 )
 
-type LoginInput struct {
+type loginInput struct {
 	Username string `json:"username" binding:"required"`
 	Password string `json:"password" binding:"required"`
 }
 
 func Login(c *gin.Context) {
 	var user models.User
-	var input LoginInput
+	var input loginInput
 	if err := c.ShouldBindJSON(&input); err != nil {
 		c.JSON(http.StatusBadRequest, gin.H{"error": err.Error()})
 		return
@@ -46,7 +44,6 @@ func LoginCheck(username, password string) (string, error) {
 	if err != nil && err == bcrypt.ErrMismatchedHashAndPassword {
 		return "incorrect password", err
 	}
-	fmt.Println(user.Id, user.Username, user.Password)
 	token, err := config.GenerateJWT(user.Id)
 	if err != nil {
 		return "error generate JWT", err

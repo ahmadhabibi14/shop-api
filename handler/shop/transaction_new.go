@@ -1,31 +1,53 @@
 package shop
 
 import (
-	"log"
 	"net/http"
 	"shop-api/config"
 	"shop-api/models"
-	"time"
+	"shop-api/utils"
 
 	"github.com/gin-gonic/gin"
 )
 
+type newTransactionInput struct {
+	Menu    string `json:"menu"`
+	Price   int    `json:"price"`
+	Qty     int    `json:"qty"`
+	Payment string `json:"payment"`
+	Total   int    `json:"total"`
+}
+
 func NewTransaction(c *gin.Context) {
+	db := config.ConnectDB()
+	transaction_input := newTransactionInput{}
 	transaction := models.Transaction{}
-	if err := c.BindJSON(&transaction); err != nil {
+
+	if err := c.BindJSON(&transaction_input); err != nil {
 		c.JSON(http.StatusBadRequest, gin.H{"error": err.Error()})
 		return
 	}
-	db := config.ConnectDB()
+	// user_id, errs := config.ExtractTokenID(c)
+	// if errs != nil {
+	// 	c.JSON(http.StatusBadRequest, gin.H{"error": errs.Error()})
+	// 	return
+	// }
+
+	transaction.Id = utils.GenerateRandomID(11)
+	transaction.Customer_id = "ckXvEmnahx0"
+	transaction.Menu = transaction_input.Menu
+	transaction.Price = transaction_input.Price
+	transaction.Qty = transaction_input.Qty
+	transaction.Payment = transaction_input.Payment
+	transaction.Total = transaction_input.Total
 	_, err := db.Exec(
-		"INSERT INTO Transaction (id, customer_id, menu, price, qty, payment, total, created_at) VALUES (?, ?, ?, ?, ?, ?, ?, ?",
+		"INSERT INTO transaction VALUES (?, ?, ?, ?, ?, ?, ?, NOW())",
 		transaction.Id, transaction.Customer_id, transaction.Menu,
-		transaction.Price, transaction.Qty, transaction.Payment, transaction.Total, time.Now(),
+		transaction.Price, transaction.Qty, transaction.Payment, transaction.Total,
 	)
+	defer db.Close()
 	if err != nil {
 		c.JSON(http.StatusBadRequest, gin.H{"error": err.Error()})
-		log.Println(err.Error())
+		return
 	}
-	defer db.Close()
 	c.JSON(http.StatusOK, gin.H{"message": "Transaction success"})
 }

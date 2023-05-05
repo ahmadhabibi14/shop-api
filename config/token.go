@@ -11,7 +11,7 @@ import (
 )
 
 func GenerateJWT(user_id string) (tokenString string, err error) {
-	expirationTime := time.Now().Add(24 * time.Hour)
+	expirationTime := time.Now().Add(720 * time.Hour)
 	claims := jwt.MapClaims{
 		"authorized": true,
 		"user_id":    user_id,

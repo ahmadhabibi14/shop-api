@@ -11,7 +11,7 @@ func AuthJWT() gin.HandlerFunc {
 	return func(c *gin.Context) {
 		err := config.TokenValid(c)
 		if err != nil {
-			c.String(http.StatusUnauthorized, "Unauthorized")
+			c.String(http.StatusUnauthorized, "Unauthorized, Please login !!")
 			c.Abort()
 			return
 		}
