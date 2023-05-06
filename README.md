@@ -4,13 +4,13 @@
 
 - [x] Koneksi ke Database MySQL
 - [x] Menggunakan library [Gin](https://gin-gonic.com/)
-- [ ] Membuat API dengan 
-- [ ] Handler:
+- [x] Membuat API dengan REST
+- [x] Handler:
       - `POST` Membuat transaksi baru
       - `GET` Mendapat list transaksi diurutkan dari yang terbaru:
          - [ ] `Query`: untuk melakukan pencarian menu dan harganya pada transaksi
          - [ ] `Customer`: diurutkan dari nama customer
-- [ ] Session login, menyimpan kredensial `Customer` untuk melakukan query ke database
+- [x] Menggunakan JWT, untuk autentikasi
 - [ ] Menggunakan `docker-compose` untuk deployment
 
 ## Case Challenge

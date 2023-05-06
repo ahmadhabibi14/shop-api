@@ -27,4 +27,4 @@ curl -X POST \
 
 ## TODO
 
-- [ ] Catch `user_id` from jwt, convert data type from interface to string
+- [x] Catch `user_id` from jwt, convert data type from interface to string

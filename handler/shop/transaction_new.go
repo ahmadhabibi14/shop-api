@@ -1,6 +1,7 @@
 package shop
 
 import (
+	"fmt"
 	"net/http"
 	"shop-api/config"
 	"shop-api/models"
@@ -26,14 +27,15 @@ func NewTransaction(c *gin.Context) {
 		c.JSON(http.StatusBadRequest, gin.H{"error": err.Error()})
 		return
 	}
-	// user_id, errs := config.ExtractTokenID(c)
-	// if errs != nil {
-	// 	c.JSON(http.StatusBadRequest, gin.H{"error": errs.Error()})
-	// 	return
-	// }
+	uid, errs := config.ExtractTokenID(c)
+	if errs != nil {
+		c.JSON(http.StatusBadRequest, gin.H{"error": errs.Error()})
+		return
+	}
+	user_id := fmt.Sprint(uid)
 
 	transaction.Id = utils.GenerateRandomID(11)
-	transaction.Customer_id = "ckXvEmnahx0"
+	transaction.Customer_id = user_id
 	transaction.Menu = transaction_input.Menu
 	transaction.Price = transaction_input.Price
 	transaction.Qty = transaction_input.Qty
