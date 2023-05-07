@@ -19,7 +19,7 @@ func SearchTransaction(c *gin.Context) {
 		return
 	}
 	var rows, err = db.Query(
-		"SELECT transaction.* FROM transaction JOIN users on transaction.customer_id = users.id WHERE transaction.customer_id = ?",
+		"SELECT transactions.* FROM transactions JOIN users on transactions.customer_id = users.id WHERE transactions.customer_id = ?",
 		user_id,
 	)
 	if err != nil {

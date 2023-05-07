@@ -42,7 +42,7 @@ func NewTransaction(c *gin.Context) {
 	transaction.Payment = transaction_input.Payment
 	transaction.Total = transaction_input.Total
 	_, err := db.Exec(
-		"INSERT INTO transaction VALUES (?, ?, ?, ?, ?, ?, ?, NOW())",
+		"INSERT INTO transactions VALUES (?, ?, ?, ?, ?, ?, ?, NOW())",
 		transaction.Id, transaction.Customer_id, transaction.Menu,
 		transaction.Price, transaction.Qty, transaction.Payment, transaction.Total,
 	)

@@ -15,3 +15,11 @@ CREATE TABLE transaction (
    created_at DATETIME,
    FOREIGN KEY (customer_id) REFERENCES users(id)
 );
+
+CREATE TABLE profiles (
+   id VARCHAR(50) PRIMARY KEY NOT NULL,
+   user_id VARCHAR(50) NOT NULL,
+   full_name VARCHAR(200) NOT NULL,
+   avatar_file_name VARCHAR(100) DEFAULT "default.png",
+   FOREIGN KEY (user_id) REFERENCES users(id)
+)

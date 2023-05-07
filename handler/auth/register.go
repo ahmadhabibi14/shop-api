@@ -15,6 +15,7 @@ import (
 type registerInput struct {
 	Username string `json:"username" binding:"required"`
 	Password string `json:"password" binding:"required"`
+	// FullName string `json:"fullname" binding:"required"`
 }
 
 func Register(c *gin.Context) {
