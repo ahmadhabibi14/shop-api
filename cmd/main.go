@@ -3,6 +3,7 @@ package main
 import (
 	"log"
 	"shop-api/handler/auth"
+	"shop-api/handler/setting/user"
 	"shop-api/handler/shop"
 	"shop-api/middlewares"
 
@@ -29,6 +30,12 @@ func main() {
 	shop_api.Use(gin.Recovery(), middlewares.Logger(), middlewares.AuthJWT())
 	shop_api.POST("/new-transaction", shop.NewTransaction)
 	shop_api.GET("/search-transaction", shop.SearchTransaction)
+
+	user_setting := r.Group("/api/setting")
+	user_setting.Use(gin.Recovery(), middlewares.Logger(), middlewares.AuthJWT())
+	user_setting.POST("/avatar-image", user.EditAvatar)
+
+	// SERVER READY !!
 	r.Run(":8080")
 	log.Println("Server ready at port 8080")
 }

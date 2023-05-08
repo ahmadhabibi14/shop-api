@@ -25,6 +25,16 @@ curl -X POST \
    > http://localhost:8080/<API_ENDPOINT_URL>
 ```
 
+- **Update Avatar**
+```sh
+curl -X POST \
+   > -F "file=@/home/habi/test.png" \
+   > -H "Content-Type: multipart/form-data" \
+   > -H "Authorization: Bearer <JWT_TOKEN>" \
+   > http://localhost:8080/api/setting/avatar-image
+```
+
 ## TODO
 
 - [x] Catch `user_id` from jwt, convert data type from interface to string
+- [ ] INSERT to avatar file name to database
