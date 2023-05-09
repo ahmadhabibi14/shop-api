@@ -43,7 +43,7 @@ func isImage(file *multipart.FileHeader) string {
 	defer f.Close()
 
 	// Check that file is an image
-	_, format, err := image.Decode(f)
+	img, format, err := image.DecodeConfig(f)
 	if err != nil {
 		return "Uploaded file is not an image"
 	}
@@ -51,24 +51,6 @@ func isImage(file *multipart.FileHeader) string {
 	// Check that the file extension is allowed
 	if !allowedExtension(format) {
 		return "Uploaded file extension is not allowed"
-	}
-
-	// Decode the image
-	/*
-		image.RegisterFormat("png", "png", png.Decode, png.DecodeConfig)
-		src, _, err := image.Decode(infile)
-
-		infile, err := os.Open(filename)
-		image.RegisterFormat("png", "png", png.Decode, png.DecodeConfig)
-		src, _, err := image.Decode(infile)
-
-		image.RegisterFormat("png", "\x89PNG\r\n\x1a\n", png.Decode, png.DecodeConfig)
-
-		image.RegisterFormat("jpeg", "\xff\xd8", jpeg.Decode, jpeg.DecodeConfig)
-	*/
-	img, _, err := image.DecodeConfig(f)
-	if err != nil {
-		return "Could not decode uploaded image"
 	}
 
 	// Check that the image has the same dimension
