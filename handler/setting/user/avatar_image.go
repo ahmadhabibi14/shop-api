@@ -14,6 +14,7 @@ import (
 )
 
 func EditAvatar(c *gin.Context) {
+	db := config.ConnectDB()
 	uid, errs := config.ExtractTokenID(c)
 	if errs != nil {
 		c.JSON(http.StatusBadRequest, gin.H{"error": errs.Error()})
@@ -32,6 +33,15 @@ func EditAvatar(c *gin.Context) {
 		return
 	}
 
+	// Set image avatar to database
+	_, err = db.Exec(
+		"UPDATE profiles JOIN users ON profiles.user_id = users.id SET profiles.avatar_file_name = ? WHERE profiles.user_id = ?",
+		fmt.Sprintf("%s.png", user_id), user_id,
+	)
+	defer db.Close()
+	if err != nil {
+		c.JSON(http.StatusBadRequest, gin.H{"error": "Error update profile"})
+	}
 	c.JSON(http.StatusOK, gin.H{"message": "File upload successfully !!"})
 }
 
