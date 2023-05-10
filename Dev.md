@@ -3,7 +3,8 @@
 - **Authentication**
 ```sh
 # Register
-curl -X POST -d '{"username": "vl3k0", "password": "wow123"}' localhost:8080/api/register
+curl -X POST localhost:8080/api/register \
+   > -d '{"username": "vl3k0", "fullname": "Your Full Name", "password": "wow123"}'
 
 # Login
 curl -X POST -d '{"username": "vl3k0", "password": "wow123"}' localhost:8080/api/login
