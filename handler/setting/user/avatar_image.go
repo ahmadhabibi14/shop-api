@@ -1,6 +1,7 @@
 package user
 
 import (
+	"errors"
 	"fmt"
 	"image"
 	_ "image/jpeg"
@@ -22,10 +23,15 @@ func EditAvatar(c *gin.Context) {
 	}
 	user_id := fmt.Sprint(uid)
 	file, _ := c.FormFile("file")
-	if isImage(file) != "image" {
-		c.AbortWithStatusJSON(http.StatusBadRequest, gin.H{"error": isImage(file)})
+
+	// Validate Image
+	img_message, valid_img := imageValidation(file)
+	if valid_img != nil {
+		c.AbortWithStatusJSON(http.StatusBadRequest, gin.H{"error": img_message})
 		return
 	}
+
+	// Save image in file
 	avatar_file_path := fmt.Sprintf("assets/img/avatar/%s.png", user_id)
 	err := c.SaveUploadedFile(file, avatar_file_path)
 	if err != nil {
@@ -45,44 +51,45 @@ func EditAvatar(c *gin.Context) {
 	c.JSON(http.StatusOK, gin.H{"message": "File upload successfully !!"})
 }
 
-func isImage(file *multipart.FileHeader) string {
+func imageValidation(file *multipart.FileHeader) (string, error) {
+	var isError error = errors.New("Error")
 	f, err := file.Open()
 	if err != nil {
-		return "Could not open uploaded file"
+		return "Could not open uploaded file", isError
 	}
 	defer f.Close()
 
 	// Check that file is an image
 	img, format, err := image.DecodeConfig(f)
 	if err != nil {
-		return "Uploaded file is not an image"
+		return "Uploaded file is not an image", isError
 	}
 
 	// Check that the file extension is allowed
 	if !allowedExtension(format) {
-		return "Uploaded file extension is not allowed"
+		return "Uploaded file extension is not allowed", isError
 	}
 
 	// Check that the image has the same dimension
 	if img.Width != img.Height {
-		return "Uploaded image does not have the same dimension, recommend to 500x500"
+		return "Uploaded image does not have the same dimension, recommend to 500x500", isError
 	}
 
 	// Check that the image meets the minimum and maximum pixel dimensions
 	if (img.Width < minPixelWidth) && (img.Height < minPixelHeight) {
-		return fmt.Sprintf("Uploaded image does not meet minimum pixel dimensions of %dx%d", minPixelWidth, minPixelHeight)
+		return fmt.Sprintf("Uploaded image does not meet minimum pixel dimensions of %dx%d", minPixelWidth, minPixelHeight), isError
 	}
 	if (img.Width > maxPixelWidth) && (img.Height > maxPixelHeight) {
-		return fmt.Sprintf("Uploaded image exceeds maximum pixel dimensions of %dx%d", maxPixelWidth, maxPixelHeight)
+		return fmt.Sprintf("Uploaded image exceeds maximum pixel dimensions of %dx%d", maxPixelWidth, maxPixelHeight), isError
 	}
 
 	// Check if the file size is not too large
 	max := float64(maxFileSize) / 1000000
 	if file.Size > maxFileSize {
-		return fmt.Sprintf("Uploaded file exceeds maximum size of %.2f MB", max)
+		return fmt.Sprintf("Uploaded file exceeds maximum size of %.2f MB", max), isError
 	}
 
-	return "image"
+	return "image", nil
 }
 
 const (
