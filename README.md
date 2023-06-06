@@ -71,3 +71,37 @@ This endpoint allows users to authenticate themselves and obtain an access token
    }
    ```
 </details>
+
+## User Setting
+
+### Update Avatar Image
+> `POST` */api/setting/avatar-image*
+
+Update avatar image with specific resolution and dimension, this endpoint have image validation
+<details>
+   <summary><b>Example</b></summary>
+   
+   ##### Request
+   ```http
+   POST /api/setting/avatar-image HTTP/1.1
+   Host: example.com
+   Content-Type: multipart/form-data; boundary="avatar-image"
+
+   --avatar-image
+   Content-Disposition: form-data; name="file"; filename="your-avatar-image.png"
+   Content-Type: image/png
+
+   <binary data of the image file>
+   --avatar-image--
+   ```
+   
+   ##### Response
+   ```http
+   HTTP/1.1 200 OK
+   Content-Type: application/json
+
+   {
+      "message": "File upload successfully !!"
+   }
+   ```
+</details>
