@@ -4,7 +4,7 @@ The API Docs of simple e-commerse API, built with Golang, Gin framework, JWT aut
 ##  **Authentication**
 The authentication section provides endpoints for user registration and login to secure access to the API.
 
-### Register New User
+### 1.  Register New User
 > `POST`  */api/register*
 
 This endpoint allows users to create a new account by providing the necessary information.  
@@ -39,7 +39,7 @@ This endpoint allows users to create a new account by providing the necessary in
    ```
 </details>
 
-### User Login
+### 2. User Login
 > `POST` */api/login*
 
 This endpoint allows users to authenticate themselves and obtain an access token (JWT) for accessing protected routes.
@@ -74,7 +74,7 @@ This endpoint allows users to authenticate themselves and obtain an access token
 
 ## User Setting
 
-### Update Avatar Image
+### 1. Update Avatar Image
 > `POST` */api/setting/avatar-image*
 
 Update avatar image with specific resolution and dimension, this endpoint have image validation
