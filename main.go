@@ -7,6 +7,7 @@ import (
 
 	"github.com/ahmadhabibi14/shop-api/app"
 	"github.com/ahmadhabibi14/shop-api/controller"
+	"github.com/ahmadhabibi14/shop-api/exception"
 	"github.com/ahmadhabibi14/shop-api/helper"
 	"github.com/ahmadhabibi14/shop-api/repository"
 	"github.com/ahmadhabibi14/shop-api/service"
@@ -34,6 +35,8 @@ func main() {
 	router.POST("/api/categories", categoryController.Create)
 	router.PUT("/api/categories/:categoryId", categoryController.Update)
 	router.DELETE("/api/categories/:categoryId", categoryController.Delete)
+
+	router.PanicHandler = exception.ErrorHandler
 
 	server := http.Server{
 		Addr:    os.Getenv("WEB_DOMAIN"),
