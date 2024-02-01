@@ -1,17 +1,50 @@
 package exception
 
 import (
+	"fmt"
 	"net/http"
 
 	"github.com/ahmadhabibi14/shop-api/helper"
 	"github.com/ahmadhabibi14/shop-api/model/web"
+	"github.com/go-playground/validator/v10"
 )
 
 func ErrorHandler(writer http.ResponseWriter, request *http.Request, err interface{}) {
 	if notFoundError(writer, request, err) {
 		return
 	}
+
+	if validationErrors(writer, request, err) {
+		return
+	}
 	internalServerError(writer, request, err)
+}
+
+func validationErrors(writer http.ResponseWriter, request *http.Request, err interface{}) bool {
+	exception, ok := err.(validator.ValidationErrors)
+	if ok {
+		writer.Header().Set("Content-Type", "application/json")
+		writer.WriteHeader(http.StatusBadRequest)
+
+		errorMsg := make([]string, 0)
+		for _, err := range exception {
+			errorMsg = append(errorMsg, fmt.Sprintf(
+				"Error when validating [%s]: %v",
+				err.Field(),
+				err.Value(),
+			))
+		}
+		webResponse := web.WebResponse{
+			Code:   http.StatusBadRequest,
+			Status: "BAD REQUEST",
+			Data:   errorMsg[0],
+		}
+
+		helper.WriteToResponseBody(writer, webResponse)
+		return true
+	} else {
+		return false
+	}
 }
 
 func notFoundError(writer http.ResponseWriter, request *http.Request, err interface{}) bool {
