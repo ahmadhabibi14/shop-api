@@ -20,19 +20,23 @@ func init() {
 	helper.PanicIfError(err)
 }
 
+func NewServer(authMiddleware *middleware.AuthMiddleware) *http.Server {
+	return &http.Server{
+		Addr:    os.Getenv("WEB_DOMAIN"),
+		Handler: authMiddleware,
+	}
+}
+
 func main() {
 	db := app.NewDB()
 	validate := validator.New()
 	categoryRepository := repository.NewCategoryRepository()
 	categoryService := service.NewCategoryService(categoryRepository, db, validate)
 	categoryController := controller.NewCategoryController(categoryService)
-
 	router := app.NewRouter(categoryController)
+	authMiddleware := middleware.NewAuthMiddleware(router)
 
-	server := http.Server{
-		Addr:    os.Getenv("WEB_DOMAIN"),
-		Handler: middleware.NewAuthMiddleware(router),
-	}
+	server := NewServer(authMiddleware)
 
 	log.Println("Server ready at port", os.Getenv("WEB_PORT"))
 	err := server.ListenAndServe()

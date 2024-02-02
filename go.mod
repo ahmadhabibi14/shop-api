@@ -9,6 +9,8 @@ require (
 	github.com/julienschmidt/httprouter v1.3.0
 )
 
+require github.com/google/wire v0.5.0
+
 require (
 	github.com/davecgh/go-spew v1.1.1 // indirect
 	github.com/gabriel-vasile/mimetype v1.4.2 // indirect
